@@ -1,0 +1,4 @@
+data = {'Very Low Proficiency': {'Proficiency': 'Very Low Proficiency', 'Europe': 0, 'Middle East And North Africa': 0, 'Asia': 0, 'Latin America': 0}, 'Moderate Proficiency': {'Proficiency': 'Moderate Proficiency', 'Europe': 0, 'Middle East And North Africa': 0, 'Asia': 0, 'Latin America': 0}, 'Low Proficiency': {'Proficiency': 'Low Proficiency', 'Europe': 0, 'Middle East And North Africa': 0, 'Asia': 0, 'Latin America': 0}, 'Very High Proficiency': {'Proficiency': 'Very High Proficiency', 'Europe': 0, 'Middle East And North Africa': 0, 'Asia': 0, 'Latin America': 0}, 'High Proficiency': {'Proficiency': 'High Proficiency', 'Europe': 0, 'Middle East And North Africa': 0, 'Asia': 0, 'Latin America': 0}}
+
+data['Very Low Proficiency']['Middle East And North Africa'] += 1
+print data['Very Low Proficiency']

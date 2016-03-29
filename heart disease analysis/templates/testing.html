@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--Load the AJAX API-->
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+    // Load the Visualization API and the piechart package.
+    google.load('visualization', '1.0', {'packages':['corechart']});
+
+    // Log the data to the console to make sure what you are expecting
+    // is arriving
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.setOnLoadCallback(drawChart);
+    
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
+    // Create the data table.
+    var datatable = google.visualization.arrayToDataTable(europe = [['CountryName', 'EPI Score'], ['Austria', 61.97], ['Azerbaijan', 46.12], ['Belgium', 59.13], ['Czech Republic', 59.01], ['Denmark', 70.05], ['Estonia', 63.73], ['Finland', 65.32], ['France', 51.84], ['Germany', 61.83], ['Hungary', 57.9], ['Italy', 54.02], ['Latvia', 57.16], ['Lithuania', 55.08], ['Luxembourg', 63.45], ['Netherlands', 70.58], ['Norway', 67.83], ['Poland', 62.95], ['Portugal', 60.61], ['Romania', 59.69], ['Slovakia', 56.34], ['Slovenia', 64.97], ['Spain', 56.8], ['Sweden', 70.94], ['Switzerland', 58.43], ['Turkey', 47.62], ['Ukraine', 52.61]]
+        )
+    var options = {
+    title: 'English in Europe',
+    width: 600, height: 400,
+    chartArea: {height: '50%'},
+    vAxis: {title: 'CountryName', titleTextStyle: {color: 'red'}},
+    hAxis: {title: 'EPI Score', titleTextStyle: {color: 'red'}},
+    region: "150"
+    };      
+    
+
+    var europeChart = new google.visualization.GeoChart(document.getElementById('europe_map'));
+    europeChart.draw(datatable, options);
+
+    //create map of middle east
+    var datatable2 = google.visualization.arrayToDataTable([['CountryName', 'EPI Score'], ['Egypt', 46.73], ['Iraq', 40.69], ['Jordan', 47.33], ['Kuwait', 42.65], ['Libya', 37.86], ['Morocco', 47.4], ['Oman', 46.34], ['Pakistan', 49.96], ['Qatar', 43.72], ['Saudi Arabia', 39.93], ['United Arab Emirates', 50.87], ['Yemen', 47.6]])
+    var options = {
+        width: 600, height:400}
+    var middleEastChart = new google.visualization.GeoChart(document.getElementById('map'));
+    middleEastChart.draw(datatable2, options)
+    }
+
+  </script>
+<meta charset="UTF-8">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Data Pipeline Project Byte 3 -- Visualization
+</title>
+</head>
+<body>
+<h1>Data Pipeline Project Byte 3 -- Visualization</h1>
+
+<iframe width="500" height="300" scrolling="no" frameborder="no"
+  src="https://www.google.com/fusiontables/embedviz?q=select+col16%3E%3E0+from+1ymz3EtGdi4qKGMl5AxEFXtTlgk3tKi8iCpjTzvM&amp;viz=MAP&amp;h=false&amp;lat=38.071424981566125&amp;lng=-85.15232666015623&amp;t=1&amp;z=9&amp;l=col16%3E%3E0&amp;y=3&amp;tmplt=3&amp;hml=TWO_COL_LAT_LNG"></iframe>
+<br>
+    <!--Div that will hold the pie chart-->
+    <div id="europe_map"></div>
+    <div id="map"></div>
+    <div id="chart_div"></div>
+
+
+</body>
+</html>
