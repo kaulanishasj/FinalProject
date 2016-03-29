@@ -51,7 +51,13 @@
 <body>
 <h2>Hello</h2>
 <div id="tooltip"></div><!-- div to hold tooltip. -->
+<h2>Female Deaths</h2>
+<svg width="960" height="600" id="femaleStates"></svg> <!-- svg to hold the map. -->
+<h2>All Genders Deaths</h2>
 <svg width="960" height="600" id="statesvg"></svg> <!-- svg to hold the map. -->
+<h2>Male Deaths</h2>
+<svg width="960" height="600" id="maleStates"></svg> <!-- svg to hold the map. -->
+
 <script src="templates/uStates.js"></script> <!-- creates uStates. -->
 <script src="js/jquery-1.11.3.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -65,9 +71,11 @@
     
 
     //Data Format?
-
-    var data = {{data|safe}}
+    var female = {{female|safe}}
+    var data = {{both|safe}}
+    var male = {{male|safe}}
     console.log(data)
+    console.log(femaleData)
 
     var states = {
             'AK': 'Alaska',
@@ -136,14 +144,40 @@
     "CO", "NM", "OR", "ND", "SD", "NE", "IA", "MS", "IN", "IL", "MN", 
     "WI", "MO", "AR", "OK", "KS", "LS", "VA"]
         .forEach(function(d){ 
-            var count = (data[states[d]]);
+            var count = (female[states[d]]);
             sampleData[d]={count:count, color:d3.interpolate("#ffffcc", "#800026")(count/100)}; 
+        });
+
+    var femaleSample = {};
+    ["HI", "AK", "FL", "SC", "GA", "AL", "NC", "TN", "RI", "CT", "MA",
+    "ME", "NH", "VT", "NY", "NJ", "PA", "DE", "MD", "WV", "KY", "OH", 
+    "MI", "WY", "MT", "ID", "WA", "DC", "TX", "CA", "AZ", "NV", "UT", 
+    "CO", "NM", "OR", "ND", "SD", "NE", "IA", "MS", "IN", "IL", "MN", 
+    "WI", "MO", "AR", "OK", "KS", "LS", "VA"]
+        .forEach(function(d){ 
+            var count = (data[states[d]]);
+            femaleSample[d]={count:count, color:d3.interpolate("#ffffcc", "#800026")(count/100)}; 
+        });
+
+    var maleSample = {};
+    ["HI", "AK", "FL", "SC", "GA", "AL", "NC", "TN", "RI", "CT", "MA",
+    "ME", "NH", "VT", "NY", "NJ", "PA", "DE", "MD", "WV", "KY", "OH", 
+    "MI", "WY", "MT", "ID", "WA", "DC", "TX", "CA", "AZ", "NV", "UT", 
+    "CO", "NM", "OR", "ND", "SD", "NE", "IA", "MS", "IN", "IL", "MN", 
+    "WI", "MO", "AR", "OK", "KS", "LS", "VA"]
+        .forEach(function(d){ 
+            var count = (male[states[d]]);
+            maleSample[d]={count:count, color:d3.interpolate("#ffffcc", "#800026")(count/100)}; 
         });
 
     // data in format of: {StateName: {low, high, average, color}, StateName: {low, high, average, color}}
     
     /* draw states on id #statesvg */   
     uStates.draw("#statesvg", sampleData, tooltipHtml);
+    uStates.draw("#femaleStates", femaleSample, tooltipHtml);
+    uStates.draw("#maleStates", femaleSample, tooltipHtml);
+
+
 </script>
 
 </body>

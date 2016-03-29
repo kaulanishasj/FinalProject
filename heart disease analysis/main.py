@@ -40,14 +40,15 @@ app = Flask(__name__)
 def get_all_data():    
     # open the data stored in a file called "death.csv"
     try:
-        with open("data/death.csv", 'rb') as f:
+        #with open("data/death.csv", 'rb') as f:
+        with open("raw_data.csv", 'rb') as f:
             read = csv.reader(f)
             response = []
             for row in read:
                 #logging.info(row)
                 response.append(row)
         #first 4 rows are meta-data
-        return dataDict(response[4:])
+        return response[4:]
 
     except IOError:
         logging.info("failed to load file")        
@@ -60,12 +61,27 @@ def dataDict(d):
         data[state] = count
     return data
 
+def get_data(data):
+    #state, male, female
+    femaleData = {}
+    maleData = {}
+    bothData = {}
+    for row in data:
+        state = row[0]
+        male = row[1]
+        female = row[2]
+        both = male + female
+        femaleData[state] = female
+        maleData[state] = male
+        bothData[state] = both
+    return (femaleData, maleData, bothData)
+
     
 @app.route('/')
 def index():
     data = get_all_data()
-    logging.info(data)
-    variables = {'data':data}
+    (femaleData, maleData, bothData) = get_data(data)
+    variables = {'data':data, 'female': femaleData, 'male': maleData, 'both': bothData}
     template = JINJA_ENVIRONMENT.get_template('templates/index.html')
     return template.render(variables)
 
