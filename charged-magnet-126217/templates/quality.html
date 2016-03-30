@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+    <title>Quality of This Data</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/theme.css" rel="stylesheet">
+  </head>
+
+  <body role="document">
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="about">About This Data Set</a></li>
+	    <li  class="active"><a href="quality">Data Quality</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container theme-showcase" role="main">
+
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron">
+	<h1>Quality: About This Data Set</h1>
+        <p>I merged two data sets, one from the English Proficiency Index and one from the United Nation's Human Development Index.  from the which ranks the skills of adult English speakers in different countries. </a></p>
+      </div>
+
+    
+      <div class="page-header">
+	<h2>Question: Is the data complete?</h2>
+  <p>As noted early, the EPI data was gathered from self-selected test-takers.This self-selection is indicative of bias in the data. A possible reason for bias is that only individuals with access to reliable internet and knowledge of the Education First English tests could participate. Additionally, in merging the two data sets, I was forced to lose data points. The EPI data only ranked 63 countries, while the HDI data had about 186 countries. This is nearly 3x as many countries.</p>
+  <p>Because the HDI presented fairly extensive data, I decided that it would not affect the completeness of the data. As such, in merging the data, only countries in the intersection of those data sets remained in the final set. With this in mind, I hoped to see what was lost from this data set in merging it with the EPI data. I decided that this would in turn provide a better picture of how the EPI data led to bias.</p>
+  <p><b>Exploration</b></p>
+
+
+  <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="thead-inverse">
+           <tr> 
+            <th>A.</th>
+            <th>B.</th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td><img src = "../static/barHDI.png"/></td>
+            <td><img src ="../static/pieHDI.png"/></td>
+           </tr>
+          </tbody>
+         </table>
+      </div> 
+
+  <p><b>Analysis</b></p>
+  <p>As demonstrated in the data,the sample in the data set is skewed towards countries with very high developed countries. While bias was identified in the data, I decided that it didn't impact my overall analysis. I assumed that most countries that would care about English Language proficiency would be from higher developed countries. It seemed reasonable to assume that countries with lower human development would have more important priorities over English language learning. </p> 
+
+  <p>Additionally, in counting how English language proficiency was distributed by country, I saw that there was still a reasonable distribution of proficiency even within this group of highly developed countries</p>
+
+  <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="thead-inverse">
+           <tr> 
+            <th>A.</th>
+            <th>B.</th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td><img src = "../static/barEPI.png"/></td>
+            <td><img src ="../static/pieEPI.png"/></td>
+           </tr>
+          </tbody>
+         </table>
+      </div> 
+      
+      <div class="page-header">
+	<h2>Is the data coherent?</h2>
+	<p>Examining the evidence above, most countries have Very Low English proficiency. This is true despite the fact that most of the countries in this data set are from highly developed countries. This makes sense because English is being treated as a second language. Furthermore, because the EPI advertises itself as a language learning company that people can use to improve/asses their English, it makes sense that the majority of the samples do not hold high English proficiency.</p>
+  <p>In regards to my original question, <i>What factors might correlate with English Language Proficiency</i> more statistical analysis is necessary. I thought that comparing HDI Score vs. EPI Score, Mean Years of School vs. EPI Score, and Mean GDI vs. EPI would hold some insights.</p>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="thead-inverse">
+           <tr> 
+            <th>A.</th>
+            <th>B.</th>
+            <th>C.</th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td><iframe width="500" height="300" scrolling="no" frameborder="no" src="https://www.google.com/fusiontables/embedviz?containerId=googft-gviz-canvas&amp;q=select+col10%2C+col2+from+1xBlXG-D3BiB2tutuoxD401BNI_ZW7KzFf1gl7xr7+order+by+col10+asc&amp;viz=GVIZ&amp;t=SCATTER&amp;rmax=250&amp;uiversion=2&amp;gco_forceIFrame=true&amp;gco_hasLabelsColumn=true&amp;gco_tooltip=%7B%22isHtml%22%3Atrue%7D&amp;tmplt=4&amp;width=500&amp;height=300"></iframe></td>
+            <td><iframe width="500" height="300" scrolling="no" frameborder="no" src="https://www.google.com/fusiontables/embedviz?containerId=googft-gviz-canvas&amp;q=select+col10%2C+col6+from+1xBlXG-D3BiB2tutuoxD401BNI_ZW7KzFf1gl7xr7+order+by+col10+asc&amp;viz=GVIZ&amp;t=SCATTER&amp;rmax=250&amp;uiversion=2&amp;gco_forceIFrame=true&amp;gco_hasLabelsColumn=true&amp;gco_tooltip=%7B%22isHtml%22%3Atrue%7D&amp;tmplt=4&amp;width=500&amp;height=300"></iframe></td>
+            <td><iframe width="500" height="300" scrolling="no" frameborder="no" src="https://www.google.com/fusiontables/embedviz?containerId=googft-gviz-canvas&amp;q=select+col10%2C+col7+from+1xBlXG-D3BiB2tutuoxD401BNI_ZW7KzFf1gl7xr7+order+by+col10+asc&amp;viz=GVIZ&amp;t=SCATTER&amp;rmax=250&amp;uiversion=2&amp;gco_forceIFrame=true&amp;gco_hasLabelsColumn=true&amp;gco_tooltip=%7B%22isHtml%22%3Atrue%7D&amp;tmplt=4&amp;width=500&amp;height=300"></iframe></td>
+           </tr>
+          </tbody>
+         </table>
+      </div> 
+    <p>A quick glance at the scatterplot suggets that there might be some relationship. This supports my assumptions that Mean Years of Schooling and Gross National Income might be positive correlated with English Language proficiency. More rigorous analysis is needed to see if these are statistically significant relationship.</p>
+
+
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="thead-inverse">
+           <tr> 
+            <th>A.</th>
+            <th>B.</th>
+            <th>C.</th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td><img src = "../static/tableHDI.png"/></td>
+            <td><img src ="../static/tableSchool.png"/></td>
+            <td><img src = "../static/tableGNI.png"</td>
+           </tr>
+          </tbody>
+         </table>
+      </div> 
+      </div>
+
+      <div class="page-header">
+  <p>In chart B, the means years of school all increase with EPI Proficiency. This pattern almost holds true when examining Gross National Income. The Very low category has a greater mean that moderate and low proficient countries, but the data from the very low group also has a very large maximum and standard deviation, accounting for this. The standard deviation does seem to vary quite a bit for the Gross National Income, but this is also measured by capita. Assuming that the data is correct, all of these distribution seems reasonable. However, the question of correctness is still open for discussion.</p>
+	<h2>Is the data correct?</h2>
+	<p>Because participants were self-selected, there is the concern that sample English proficiency is not representative of a country’s proficiency. However, I couldn’t think of any tactics to address this. There is the possibility that conclusions from this set are incorrect, but more exploration beyond my abilities are necessary. There aren’t many other organizations that have attempted to measure English language proficiency. TOEFL test scores have been used to rank countries, but that also presents a sampling bias. As such, there were no other data sets that I could turn to for validation. 
+
+  As of this exploration, I don't have proper evidence to find out whether this data is correct or not. But, I am tempted to believe that the data is on the correct side. 
+</p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/docs.min.js"></script>
+  </body>
+</html>
