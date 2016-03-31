@@ -42,15 +42,59 @@
     </div> <!-- /container -->
 
     <div style="text-align:center;">
+
         <div id="tooltip"></div>
-        <h2>Female Deaths</h2>
-        <svg width="960" height="600" id="femaleStates"></svg> <!-- svg to hold the map. -->
-        
-        <h2>All Genders Deaths</h2>
+        <h>Number of Heart Disease Deaths per 100,000 Population</h>
+        <p>With the following maps, you can explore how many heart disease deaths 
+        occur by gender in your own state and compare it to others. Are you living
+        in a state where high rates of heart disease? These visuals should give you 
+        a sense of the general rates of heart disease mortality in the US. </p>
+        <h2>For Females</h2>
         <svg width="960" height="600" id="statesvg"></svg> <!-- svg to hold the map. -->
+
+        <h2>For All</h2>
+        <svg width="960" height="600" id="femaleStates"></svg> <!-- svg to hold the map. -->
+       
+        <h2>For Males</h2>
+        <svg width="960" height="600" id="maleStates"></svg> <!-- svg to hold the map. -->   
         
-        <h2>Male Deaths</h2>
-        <svg width="960" height="600" id="maleStates"></svg> <!-- svg to hold the map. -->
+        <div style="text-align:left;">
+
+          <div class="container">
+            <h2>Conditions that Increase Risk for Heart Disease</h2>
+            <ul>
+              <li>High Blood Pressure</li>
+              <li><b>High Cholesterol</b></li>
+              <li>Diabetes</li>
+            </ul>
+            <h2>Look at our data values filtered by the following features and see how High Cholesterol is related.</h2>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="row"><h2>Age</h2></div>
+                <div class="row"><p>Participants' age in years</p></div>
+              </div>
+              <div class="col-md-3">
+                <div class="row"><h2>Gender</h2></div>
+                <div class="row"><p>Participants' gender (1=male, 0= female)</p></div>
+              </div>
+              <div class="col-md-3">
+                <div class="row"><h2>Cholesterol</h2></div>
+                <div class="row"><p>Participants' serum cholesterol which is 
+                composed of high-density lipoprotein (HDL cholesterol), low-density
+                lipoprotein (LDL cholesterol) and triglycerides measured in mg/dL. 
+                The American Heart Association defines normal total cholesterol 
+                as less than 200 mg/dL.</p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="row"><h2>Resting Electrocardiographic Measure</h2></div>
+                <div class="row"><p>Rating of participants' electrocardiograph.</p></div>
+              </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
     </div>
 
 </body>
