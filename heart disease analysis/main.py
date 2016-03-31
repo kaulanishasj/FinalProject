@@ -38,9 +38,8 @@ from flask import Flask, request
 app = Flask(__name__)
 
 def get_all_data():    
-    # open the data stored in a file called "death.csv"
+    # open the data stored in a file called "raw_data.csv"
     try:
-        #with open("data/death.csv", 'rb') as f:
         with open("data/raw_data.csv", 'rb') as f:
             read = csv.reader(f)
             response = []
@@ -68,23 +67,22 @@ def get_data(data):
     bothData = {}
     for row in data:
         state = row[0]
-        male = row[1]
-        female = row[2]
-        both = male + female
+        male = float(row[1])
+        female = float(row[2])
+        both = float(male) + float(female)
         femaleData[state] = female
         maleData[state] = male
         bothData[state] = both
+        
+        
     return (femaleData, maleData, bothData)
 
     
 @app.route('/')
 def index():
-    data = get_all_data()
-    (femaleData, maleData, bothData) = get_data(data)
-    logging.info(femaleData)
-    variables = {'data':data, 'female': femaleData, 'male': maleData, 'both': bothData}
     template = JINJA_ENVIRONMENT.get_template('templates/home.html')
-    return template.render(variables)
+    return template.render()
+
 
 @app.route('/about')
 def about():
@@ -92,10 +90,20 @@ def about():
     return template.render()
 
 
+@app.route('/visual')
+def visual():
+    data = get_all_data()
+    (femaleData, maleData, bothData) = get_data(data)
+    
+    variables = {'data':data, 'female': femaleData, 'male': maleData, 'both': bothData}
+    template = JINJA_ENVIRONMENT.get_template('templates/visualization.html')
+    return template.render(variables)
+
 @app.errorhandler(404)
 def page_not_found(e):
     """Return a custom 404 error."""
     return 'Sorry, Nothing at this URL.', 404
+
 
 @app.errorhandler(500)
 def application_error(e):
