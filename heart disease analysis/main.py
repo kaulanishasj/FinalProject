@@ -80,8 +80,12 @@ def get_data(data):
     
 @app.route('/')
 def index():
-    template = JINJA_ENVIRONMENT.get_template('templates/home.html')
-    return template.render()
+    data = get_all_data()
+    (femaleData, maleData, bothData) = get_data(data)
+    
+    variables = {'data':data, 'female': femaleData, 'male': maleData, 'both': bothData}
+    template = JINJA_ENVIRONMENT.get_template('templates/index.html')
+    return template.render(variables)
 
 
 @app.route('/about')
@@ -89,6 +93,10 @@ def about():
     template = JINJA_ENVIRONMENT.get_template('templates/about.html')
     return template.render()
 
+@app.route('/prediction')
+def prediction():
+    template = JINJA_ENVIRONMENT.get_template('templates/prediction.html')
+    return template.render()
 
 @app.route('/visual')
 def visual():
