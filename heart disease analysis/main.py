@@ -98,17 +98,21 @@ def get_mortality_data():
     
 @app.route('/')
 def index():
-    # data = get_all_map_data()
+    data = get_all_map_data()
 
-    # (femaleData, maleData, bothData) = get_data(data)
+    (femaleData, maleData, bothData) = get_data(data)
     
     # rawMortalityData = get_mortality_data()
     # mortalityData = arrange_mortality_data(rawMortalityData)
 
-    # variables = {'data':data, 'female': femaleData, 'male': maleData, 'both': bothData}
+    variables = {'data':data, 'female': femaleData, 'male': maleData, 'both': bothData}
     template = JINJA_ENVIRONMENT.get_template('templates/index.html')
-    return template.render()
+    return template.render(variables)
 
+@app.route('/testing')
+def testing():
+    template = JINJA_ENVIRONMENT.get_template('templates/testing.html')
+    return template.render()
 
 @app.route('/about')
 def about():

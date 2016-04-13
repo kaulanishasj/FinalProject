@@ -1,3 +1,57 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+  margin: 0;
+}
+
+path.line {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+path.area {
+  fill: #e7e7e7;
+}
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+  stroke: #fff;
+}
+
+.x.axis .minor {
+  stroke-opacity: .5;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.y.axis line, .y.axis path {
+  fill: none;
+  stroke: #000;
+}
+.guideline {
+  margin-right: 100px;
+  float: right;
+}
+
+</style>
+<body>
+<label class="guideline">
+  Show Guideline & Curtain
+  <input type="checkbox" id="show_guideline" />
+</label>
+<svg></svg>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
 var margin = {top: 80, right: 80, bottom: 80, left: 80},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -7,71 +61,108 @@ var parse = d3.time.format("%b %Y").parse;
 // Scales and axes. Note the inverted domain for the y-scale: bigger is up!
 var x = d3.time.scale().range([0, width]),
     y = d3.scale.linear().range([height, 0]),
-    xAxis = d3.lineChart.axis().scale(x).tickSize(-height).tickSubdivide(true),
-    yAxis = d3.lineChart.axis().scale(y).ticks(4).orient("right");
+    xAxis = d3.svg.axis().scale(x).tickSize(-height).tickSubdivide(true),
+    yAxis = d3.svg.axis().scale(y).ticks(4).orient("right");
 
 // An area generator, for the light fill.
-var area = d3.lineChart.area()
+var area = d3.svg.area()
     .interpolate("monotone")
     .x(function(d) { return x(d.date); })
     .y0(height)
     .y1(function(d) { return y(d.price); });
 
 // A line generator, for the dark stroke.
-var line = d3.lineChart.line()
+var line = d3.svg.line()
     .interpolate("monotone")
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.price); });
 
-d3.csv("readme.csv", type, function(error, data) {
+// d3.csv("", type, function(error, data) {
+d3.csv("data/mortality.csv", function(data) {
 
+  console.log(data);
   // Filter to one symbol; the S&P 500.
   var values = data.filter(function(d) {
-    return d.symbol == "AMZN";;
+    return d.symbol == "Diseases of the Heart";
+  });
+
+  var accident = data.filter(function(d) {
+    return d.symbol == "Accidents (unintentional injuries)";
   });
 
   var msft = data.filter(function(d) {
-    return d.symbol == "MSFT";
+    return d.symbol == "Intentional self-harm (suicide)";
   });
 
   var ibm = data.filter(function(d) {
-    return d.symbol == 'IBM';
+    return d.symbol == 'Diseases of the Heart';
   });
+
+  var cancer = data.filter(function(d) {
+    return d.symbol == 'Malignant Neoplasms';
+  });
+
+  var diabetes = data.filter(function(d) {
+    return d.symbol == 'Diabetes mellitus';
+  });
+
+  var respiratory = data.filter(function(d) {
+    return d.symbol == 'Chronic lower respiratory diseases';
+  });
+
+  var nephrosis = data.filter(function(d) {
+    return d.symbol == 'nephrosis';
+  });
+
+  var cerebrovascular = data.filter(function(d) {
+    return d.symbol == 'Cerebrovascular diseases';
+  });
+
+  var alzheimers = data.filter(function(d) {
+    return d.symbol == 'Alzheimer’s disease';
+  });
+
+  var flu = data.filter(function(d) {
+    return d.symbol == 'Influenza and pneumonia';
+  });
+  
+   
 
   // Compute the minimum and maximum date, and the maximum price.
   x.domain([values[0].date, values[values.length - 1].date]);
   y.domain([0, d3.max(values, function(d) { return d.price; })]).nice();
 
   // Add an SVG element with the desired dimensions and margin.
-  var lineChart = d3.select("lineChart")
+  var svg = d3.select("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
   // Add the clip path.
-  lineChart.append("clipPath")
+  svg.append("clipPath")
       .attr("id", "clip")
     .append("rect")
       .attr("width", width)
       .attr("height", height);
 
   // Add the x-axis.
-  lineChart.append("g")
+  svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
   // Add the y-axis.
-  lineChart.append("g")
+  svg.append("g")
       .attr("class", "y axis")
       .attr("transform", "translate(" + width + ",0)")
       .call(yAxis);
 
 
   var colors = d3.scale.category10();
-  lineChart.selectAll('.line')
-    .data([values, msft, ibm])
+  svg.selectAll('.line')
+    .data([accident, msft, ibm, cancer, flu, alzheimers,cerebrovascular, 
+      respiratory, nephrosis, diabetes])
     .enter()
       .append('path')
         .attr('class', 'line')
@@ -84,7 +175,7 @@ d3.csv("readme.csv", type, function(error, data) {
         })
 
   /* Add 'curtain' rectangle to hide entire graph */
-  var curtain = lineChart.append('rect')
+  var curtain = svg.append('rect')
     .attr('x', -1 * width)
     .attr('y', -1 * height)
     .attr('height', height)
@@ -94,7 +185,7 @@ d3.csv("readme.csv", type, function(error, data) {
     .style('fill', '#ffffff')
 
   /* Optionally add a guideline */
-  var guideline = lineChart.append('line')
+  var guideline = svg.append('line')
     .attr('stroke', '#333')
     .attr('stroke-width', 0)
     .attr('class', 'guide')
@@ -104,7 +195,7 @@ d3.csv("readme.csv", type, function(error, data) {
     .attr('y2', height)
 
   /* Create a shared transition for anything we're animating */
-  var t = lineChart.transition()
+  var t = svg.transition()
     .delay(750)
     .duration(6000)
     .ease('linear')
@@ -129,7 +220,9 @@ d3.csv("readme.csv", type, function(error, data) {
 
 // Parse dates and numbers. We assume values are sorted by date.
 function type(d) {
-  d.date = parse(d.date);
+  d.date = d.date;
   d.price = +d.price;
   return d;
 }
+
+</script>
