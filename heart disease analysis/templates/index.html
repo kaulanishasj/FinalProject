@@ -1,298 +1,193 @@
-<!DOCTYPE HTML>
-<!--
-	Landed by HTML5 UP
-	html5up.net | @n33co
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>Heart Disease Analysis</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
-		<link rel="stylesheet" href="css/d3.css" type="text/css">
-		<link rel="stylesheet" href="css/main.css" />
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+  margin: 0;
+}
+
+path.line {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+path.area {
+  fill: #e7e7e7;
+}
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+  stroke: #fff;
+}
+
+.x.axis .minor {
+  stroke-opacity: .5;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.y.axis line, .y.axis path {
+  fill: none;
+  stroke: #000;
+}
+.guideline {
+  margin-right: 100px;
+  float: right;
+}
+
+</style>
+<body>
+<label class="guideline">
+  Show Guideline & Curtain
+  <input type="checkbox" id="show_guideline" />
+</label>
+<svg></svg>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var margin = {top: 80, right: 80, bottom: 80, left: 80},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var parse = d3.time.format("%b %Y").parse;
+
+// Scales and axes. Note the inverted domain for the y-scale: bigger is up!
+var x = d3.time.scale().range([0, width]),
+    y = d3.scale.linear().range([height, 0]),
+    xAxis = d3.svg.axis().scale(x).tickSize(-height).tickSubdivide(true),
+    yAxis = d3.svg.axis().scale(y).ticks(4).orient("right");
+
+// An area generator, for the light fill.
+var area = d3.svg.area()
+    .interpolate("monotone")
+    .x(function(d) { return x(d.date); })
+    .y0(height)
+    .y1(function(d) { return y(d.price); });
+
+// A line generator, for the dark stroke.
+var line = d3.svg.line()
+    .interpolate("monotone")
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.price); });
+
+// d3.csv("", type, function(error, data) {
+d3.csv("data/nationalMortality.csv", function(data) {
+
+  console.log(data);
+  // Filter to one symbol; the S&P 500.
+  var values = data.filter(function(d) {
+    return d.symbol == "All Causes";;
+  });
+
+  var msft = data.filter(function(d) {
+    return d.symbol == "Intentional self-harm (suicide)";
+  });
+
+  var ibm = data.filter(function(d) {
+    return d.symbol == 'Diseases of the Heart';
+  });
+
+  // Compute the minimum and maximum date, and the maximum price.
+  x.domain([values[0].date, values[values.length - 1].date]);
+  y.domain([0, d3.max(values, function(d) { return d.price; })]).nice();
+
+  // Add an SVG element with the desired dimensions and margin.
+  var svg = d3.select("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+  // Add the clip path.
+  svg.append("clipPath")
+      .attr("id", "clip")
+    .append("rect")
+      .attr("width", width)
+      .attr("height", height);
+
+  // Add the x-axis.
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  // Add the y-axis.
+  svg.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(" + width + ",0)")
+      .call(yAxis);
 
 
-		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
-		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+  var colors = d3.scale.category10();
+  svg.selectAll('.line')
+    .data([values, msft, ibm])
+    .enter()
+      .append('path')
+        .attr('class', 'line')
+        .style('stroke', function(d) {
+          return colors(Math.random() * 50);
+        })
+        .attr('clip-path', 'url(#clip)')
+        .attr('d', function(d) {
+          return line(d);
+        })
 
-	</head>
-	<body class="landing">
-		<div id="page-wrapper">
+  /* Add 'curtain' rectangle to hide entire graph */
+  var curtain = svg.append('rect')
+    .attr('x', -1 * width)
+    .attr('y', -1 * height)
+    .attr('height', height)
+    .attr('width', width)
+    .attr('class', 'curtain')
+    .attr('transform', 'rotate(180)')
+    .style('fill', '#ffffff')
 
-			<!-- Header -->
-				<header id="header">
-					<h1 id="logo"><a href="/">Heart Disease</a></h1>
-					<nav id="nav">
-						<ul>
-              				<li><a href="/" class="button special">Awareness</a></li>
-							<li><a href="prediction">Prediction</a></li>
-							<li><a href="about">Data Quality</a></li>
-						</ul>
-					</nav>
-				</header>
+  /* Optionally add a guideline */
+  var guideline = svg.append('line')
+    .attr('stroke', '#333')
+    .attr('stroke-width', 0)
+    .attr('class', 'guide')
+    .attr('x1', 1)
+    .attr('y1', 1)
+    .attr('x2', 1)
+    .attr('y2', height)
 
-			<!-- Banner -->
-				<section id="banner">
-					<div class="content">
-						<header>
-							<h2>Heart Disease Analysis</h2>
-							<p>Information and Prevention</p>
-						</header>
-						<span class="image"><img src="images/pic01.jpg" alt=""/></span>
-					</div>
-					<a href="#one" class="goto-next scrolly">Next</a>
-				</section>
+  /* Create a shared transition for anything we're animating */
+  var t = svg.transition()
+    .delay(750)
+    .duration(6000)
+    .ease('linear')
+    .each('end', function() {
+      d3.select('line.guide')
+        .transition()
+        .style('opacity', 0)
+        .remove()
+    });
 
-			<!-- One -->
-				<section id="one" class="spotlight style1 bottom">
-					<span class="image fit main"><img src="images/pic02.jpg" alt="" /></span>
-					<div class="content">
-						<div class="container">
-							<div class="row">
-								<div class="4u 12u$(medium)">
-									<header>
-										<h2>Odio faucibus ipsum integer consequat</h2>
-										<p>Nascetur eu nibh vestibulum amet gravida nascetur praesent</p>
-									</header>
-								</div>
-								<div class="4u 12u$(medium)">
-									<p>Feugiat accumsan lorem eu ac lorem amet sed accumsan donec.
-									Blandit orci porttitor semper. Arcu phasellus tortor enim mi
-									nisi praesent dolor adipiscing. Integer mi sed nascetur cep aliquet
-									augue varius tempus lobortis porttitor accumsan consequat
-									adipiscing lorem dolor.</p>
-								</div>
-								<div class="4u$ 12u$(medium)">
-									<p>Morbi enim nascetur et placerat lorem sed iaculis neque ante
-									adipiscing adipiscing metus massa. Blandit orci porttitor semper.
-									Arcu phasellus tortor enim mi mi nisi praesent adipiscing. Integer
-									mi sed nascetur cep aliquet augue varius tempus. Feugiat lorem
-									ipsum dolor nullam.</p>
-								</div>
-							</div>
-						</div>
-					</div>
-					<a href="#two" class="goto-next scrolly">Next</a>
-				</section>
+  t.select('rect.curtain')
+    .attr('width', 0);
+  t.select('line.guide')
+    .attr('transform', 'translate(' + width + ', 0)')
 
-			<!-- Two -->
-				<section id="two" class="spotlight style2 right">
-					<span class="image fit main"><img src="static/map.png" alt="" />
-					</span>
-					<div class="content">
-						<header>
-							<h2>Death by State per 100,000 Population</h2>
-							<p>See how common heart disease death is in your state!</p>
-						</header>
-						<p>blah blah blah blah.</p>
-						<div id="tooltip"></div>
-						<svg width="960" height="600" id="statesvg"></svg>
-						<ul class="actions">
-							<li><a href="#" class="button">Learn More</a></li>
-						</ul>
-					</div>
-					<a href="#three" class="goto-next scrolly">Next</a>
-				</section>
+  d3.select("#show_guideline").on("change", function(e) {
+    guideline.attr('stroke-width', this.checked ? 1 : 0);
+    curtain.attr("opacity", this.checked ? 0.75 : 1);
+  })
 
-			<!-- Three -->
-				<section id="three" class="spotlight style3 left">
-					<span class="image fit main bottom"><img src="images/pic04.jpg" alt="" /></span>
-					<div class="content">
-						<header>
-							<h2>Interdum felis blandit praesent sed augue</h2>
-							<p>Accumsan integer ultricies aliquam vel massa sapien phasellus</p>
-						</header>
-						<p>Feugiat accumsan lorem eu ac lorem amet ac arcu phasellus tortor enim mi mi nisi praesent adipiscing. Integer mi sed nascetur cep aliquet augue varius tempus lobortis porttitor lorem et accumsan consequat adipiscing lorem.</p>
-						<ul class="actions">
-							<li><a href="#" class="button">Learn More</a></li>
-						</ul>
-					</div>
-					<a href="#four" class="goto-next scrolly">Next</a>
-				</section>
+});
 
-			<!-- Four -->
-				<section id="four" class="wrapper style1 special fade-up">
-					<div class="container">
-						<header class="major">
-							<h2>Accumsan sed tempus adipiscing blandit</h2>
-							<p>Iaculis ac volutpat vis non enim gravida nisi faucibus posuere arcu consequat</p>
-						</header>
-						<div class="box alt">
-							<div class="row uniform">
-								<section class="4u 6u(medium) 12u$(xsmall)">
-									<span class="icon alt major fa-area-chart"></span>
-									<h3>Ipsum sed commodo</h3>
-									<p>Feugiat accumsan lorem eu ac lorem amet accumsan donec. Blandit orci porttitor.</p>
-								</section>
-								<section class="4u 6u$(medium) 12u$(xsmall)">
-									<span class="icon alt major fa-comment"></span>
-									<h3>Eleifend lorem ornare</h3>
-									<p>Feugiat accumsan lorem eu ac lorem amet accumsan donec. Blandit orci porttitor.</p>
-								</section>
-								<section class="4u$ 6u(medium) 12u$(xsmall)">
-									<span class="icon alt major fa-flask"></span>
-									<h3>Cubilia cep lobortis</h3>
-									<p>Feugiat accumsan lorem eu ac lorem amet accumsan donec. Blandit orci porttitor.</p>
-								</section>
-								<section class="4u 6u$(medium) 12u$(xsmall)">
-									<span class="icon alt major fa-paper-plane"></span>
-									<h3>Non semper interdum</h3>
-									<p>Feugiat accumsan lorem eu ac lorem amet accumsan donec. Blandit orci porttitor.</p>
-								</section>
-								<section class="4u 6u(medium) 12u$(xsmall)">
-									<span class="icon alt major fa-file"></span>
-									<h3>Odio laoreet accumsan</h3>
-									<p>Feugiat accumsan lorem eu ac lorem amet accumsan donec. Blandit orci porttitor.</p>
-								</section>
-								<section class="4u$ 6u$(medium) 12u$(xsmall)">
-									<span class="icon alt major fa-lock"></span>
-									<h3>Massa arcu accumsan</h3>
-									<p>Feugiat accumsan lorem eu ac lorem amet accumsan donec. Blandit orci porttitor.</p>
-								</section>
-							</div>
-						</div>
-						<footer class="major">
-							<ul class="actions">
-								<li><a href="#" class="button">Magna sed feugiat</a></li>
-							</ul>
-						</footer>
-					</div>
-				</section>
+// Parse dates and numbers. We assume values are sorted by date.
+function type(d) {
+  d.date = parse(d.date);
+  d.price = +d.price;
+  return d;
+}
 
-			<!-- Five -->
-				<section id="five" class="wrapper style2 special fade">
-					<div class="container">
-						<header>
-							<h2>What is My Risk of Having a Heart Disease?</h2>
-							<p>By inputting data, we will predict your risk of heart disease using a prediction model.</p>
-						</header>
-						<form method="post" action="#" class="container 50%">
-								<div align="center">
-								<div class="4u$ 12u$(xsmall)"><input type="submit" value="Get Started" class="fit special" /></div></div>
-							</div>
-						</form>
-					</div>
-				</section>
-
-			<!-- Footer -->
-				<footer id="footer">
-					<p>The Data Pipeline Spring 2016</p>
-					<ul class="copyright">
-						<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-					</ul>
-				</footer>
-
-		</div>
-
-		<!-- Scripts -->
-			<script src="js/jquery.min.js"></script>
-			<script src="js/jquery.scrolly.min.js"></script>
-			<script src="js/jquery.dropotron.min.js"></script>
-			<script src="js/jquery.scrollex.min.js"></script>
-			<script src="js/skel.min.js"></script>
-			<script src="js/util.js"></script>
-			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
-			<script src="js/main.js"></script>
-
-			<!-- Script for D3 -->
-
-			<script src="js/uStates.js"></script> <!-- creates uStates. -->
-   			<script src="js/jquery-1.11.3.min.js"></script>
-    		<script src="js/bootstrap.min.js"></script>
-    		<script type="text/javascript" src="d3/d3.v3.js"></script>
-
-		    <script>
-		    // ----------- EVERY CHART NEEDS DATA -------------- 
-
-		        function tooltipHtml(n, d){ /* function to create html content string in tooltip div. */
-		            return "<h4>"+n+"</h4><table>"+
-		                "<tr><td>Death Count </td><td>"+(d.count)+"</td></tr>"+
-		                "</table>";
-		        }
-		        
-		        //Data Format?
-		        var data = {{both|safe}};
-
-		        info.log(data);
-
-		        var states = {
-		                'AK': 'Alaska',
-		                'AL': 'Alabama',
-		                'AR': 'Arkansas',
-		                'AS': 'American Samoa',
-		                'AZ': 'Arizona',
-		                'CA': 'California',
-		                'CO': 'Colorado',
-		                'CT': 'Connecticut',
-		                'DC': 'District of Columbia',
-		                'DE': 'Delaware',
-		                'FL': 'Florida',
-		                'GA': 'Georgia',
-		                'GU': 'Guam',
-		                'HI': 'Hawaii',
-		                'IA': 'Iowa',
-		                'ID': 'Idaho',
-		                'IL': 'Illinois',
-		                'IN': 'Indiana',
-		                'KS': 'Kansas',
-		                'KY': 'Kentucky',
-		                'LS': 'Louisiana',
-		                'MA': 'Massachusetts',
-		                'MD': 'Maryland',
-		                'ME': 'Maine',
-		                'MI': 'Michigan',
-		                'MN': 'Minnesota',
-		                'MO': 'Missouri',
-		                'MP': 'Northern Mariana Islands',
-		                'MS': 'Mississippi',
-		                'MT': 'Montana',
-		                'NA': 'National',
-		                'NC': 'North Carolina',
-		                'ND': 'North Dakota',
-		                'NE': 'Nebraska',
-		                'NH': 'New Hampshire',
-		                'NJ': 'New Jersey',
-		                'NM': 'New Mexico',
-		                'NV': 'Nevada',
-		                'NY': 'New York',
-		                'OH': 'Ohio',
-		                'OK': 'Oklahoma',
-		                'OR': 'Oregon',
-		                'PA': 'Pennsylvania',
-		                'PR': 'Puerto Rico',
-		                'RI': 'Rhode Island',
-		                'SC': 'South Carolina',
-		                'SD': 'South Dakota',
-		                'TN': 'Tennessee',
-		                'TX': 'Texas',
-		                'UT': 'Utah',
-		                'VA': 'Virginia',
-		                'VI': 'Virgin Islands',
-		                'VT': 'Vermont',
-		                'WA': 'Washington',
-		                'WI': 'Wisconsin',
-		                'WV': 'West Virginia',
-		                'WY': 'Wyoming'
-		            }
-
-		        var sampleData ={}; /* Sample random data. */   
-		        ["HI", "AK", "FL", "SC", "GA", "AL", "NC", "TN", "RI", "CT", "MA",
-		        "ME", "NH", "VT", "NY", "NJ", "PA", "DE", "MD", "WV", "KY", "OH", 
-		        "MI", "WY", "MT", "ID", "WA", "DC", "TX", "CA", "AZ", "NV", "UT", 
-		        "CO", "NM", "OR", "ND", "SD", "NE", "IA", "MS", "IN", "IL", "MN", 
-		        "WI", "MO", "AR", "OK", "KS", "LS", "VA"]
-		            .forEach(function(d){ 
-		                var count = (data[states[d]]);
-		                sampleData[d]={count:count, color:d3.interpolate("#ffffcc", "#800026")(count/200)}; 
-		            });
-
-		        // data in format of: {StateName: {low, high, average, color}, StateName: {low, high, average, color}}
-		        
-		        /* draw states on id #statesvg */   
-		        uStates.draw("#statesvg", sampleData, tooltipHtml);
-		    </script>
-
-	</body>
-</html>
+</script>

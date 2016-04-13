@@ -37,7 +37,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 from flask import Flask, request
 app = Flask(__name__)
 
-def get_all_data():    
+def get_all_map_data():    
     # open the data stored in a file called "raw_data.csv"
     try:
         with open("data/raw_data.csv", 'rb') as f:
@@ -77,15 +77,37 @@ def get_data(data):
         
     return (femaleData, maleData, bothData)
 
+def get_mortality_data():
+      # open the data stored in a file called "raw_data.csv"
+    try:
+        with open("data/nationalMortality.csv", 'rb') as f:
+            read = csv.reader(f)
+            response = []
+            for row in read:
+                #logging.info(row)
+                response.append(row)
+        #first 4 rows are meta-data
+        logging.info(response)
+        return response
+
+    except IOError:
+        logging.info("failed to load file")   
+
+# def arrange_mortality_data(data):
+#     years = dict{''}
     
 @app.route('/')
 def index():
-    data = get_all_data()
-    (femaleData, maleData, bothData) = get_data(data)
+    # data = get_all_map_data()
+
+    # (femaleData, maleData, bothData) = get_data(data)
     
-    variables = {'data':data, 'female': femaleData, 'male': maleData, 'both': bothData}
+    # rawMortalityData = get_mortality_data()
+    # mortalityData = arrange_mortality_data(rawMortalityData)
+
+    # variables = {'data':data, 'female': femaleData, 'male': maleData, 'both': bothData}
     template = JINJA_ENVIRONMENT.get_template('templates/index.html')
-    return template.render(variables)
+    return template.render()
 
 
 @app.route('/about')
